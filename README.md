@@ -14,4 +14,4 @@ A terminal version of the dice game farkle built with ruby 2.5
 - a straight = 1500pts eg. [1,2,3,4,5,6] 
 <a/>
 Points to win = 10,000 or more | configured for no less than 1 player and no more than 6 players but that can be changed.
-To start the game run the command <ruby program.rb>
+To start the game run the command ruby program.rb
