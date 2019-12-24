@@ -6,7 +6,7 @@ def combo_check(array) #check for any combos within the roll and send the data t
     array.each {|number| hash[number] += 1} 
     if array.size == 6
         if hash.has_value?(2) and hash.has_value?(4)
-            puts "You rolled a 3 pair with a 2 pair! Adding 1200 points to the bank."
+            puts "You rolled a 4 pair with a 2 pair! Adding 1200 points to the bank."
             returnData[0] = 0
             returnData[1] = 1200 
         elsif hash.has_value?(2) || hash.has_value?(3)
@@ -17,7 +17,7 @@ def combo_check(array) #check for any combos within the roll and send the data t
                 end 
             end 
             if count == 3 
-                puts "You rolled three pairs of 2! Adding 1500 points to the bank."
+                puts "You rolled three pairs of 2 of a kind! Adding 1500 points to the bank."
                 returnData[0] = 0
                 returnData[1] = 1500
             else 
@@ -28,7 +28,7 @@ def combo_check(array) #check for any combos within the roll and send the data t
                     end 
                 end 
                 if count == 2 
-                    puts "You rolled three pairs of 3! Adding 2500 points to the bank."
+                    puts "You rolled two pairs of 3! Adding 2500 points to the bank."
                     returnData[0] = 0
                     returnData[1] = 2500 
                 elsif count == 1 
