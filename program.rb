@@ -51,13 +51,13 @@ while winner == false
                 else
                     puts "#{player.name} is passing the turn."
                     player.score += bank_hold
+                    if player.score >= 10000
+                        puts "GAME OVER - #{player.name} won with #{player.score} points!"
+                        winner = true
+                    end 
                     pass_turn = true              
                 end
             end 
-        end
-        if player.score >= 10000
-            puts "GAME OVER - #{player.name} won with #{player.score} points!"
-            winner = true
-        end  
+        end 
     end 
 end 
