@@ -398,4 +398,6 @@ def create_players(num)
         count += 1 
     end 
     return player_array
-end 
+end    
+###################################################################################################################################################
+#add method for showing die faces instead of an array of numbers

@@ -1,5 +1,6 @@
 require_relative 'player.rb'
 require_relative 'brains.rb'
+require 'io/console'
 
 num_players_valid = false 
 while num_players_valid == false 
@@ -26,7 +27,9 @@ while winner == false
         bank_hold = 0
         while pass_turn == false
             bank_temp = 0
-            puts "#{player.name}'s score - #{player.score} | bank total - #{bank_hold}"
+            puts "#{player.name}'s score - #{player.score} | bank total - #{bank_hold}" 
+            puts "#{player.name} press enter to roll #{dice_set.size} dice."
+            STDIN.getch
             puts "You rolled - #{dice_set}"
             combo_data = combo_check(dice_set)
             player_data = scoreDice(combo_data, bank_temp, dice_set, farkle_flag)
@@ -45,7 +48,6 @@ while winner == false
                         puts "Creating a new dice set."
                         dice_set = create_set(6)
                     else 
-                        puts "Rolling the remaining #{dice_set.size} dice."
                         dice_set = create_set(dice_set.size)
                     end 
                 else
@@ -54,8 +56,9 @@ while winner == false
                     if player.score >= 10000
                         puts "GAME OVER - #{player.name} won with #{player.score} points!"
                         winner = true
-                    end 
-                    pass_turn = true              
+                    else 
+                        pass_turn = true
+                    end         
                 end
             end 
         end 
