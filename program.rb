@@ -27,8 +27,9 @@ while winner == false
         bank_hold = 0
         while pass_turn == false
             bank_temp = 0
-            puts "#{player.name}'s score - #{player.score} | bank total - #{bank_hold}" 
-            puts "#{player.name} press enter to roll #{dice_set.size} dice."
+            puts "Your bank total - #{bank_hold} |"
+            show_scores(player_array, player)
+            puts "\n#{player.name} press enter to roll #{dice_set.size} dice."
             STDIN.getch
             puts "You rolled - #{dice_set}"
             combo_data = combo_check(dice_set)

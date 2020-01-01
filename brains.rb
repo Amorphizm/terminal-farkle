@@ -400,4 +400,8 @@ def create_players(num)
     return player_array
 end    
 ###################################################################################################################################################
-#add method for showing die faces instead of an array of numbers
+def show_scores(array, current_player)
+    array.each do |player|
+        print "#{player.name}'s score: #{player.score} | "
+    end 
+end 
