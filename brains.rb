@@ -1,5 +1,3 @@
-require_relative 'player.rb'
-###################################################################################################################################################
 def combo_check(array) #check for any combos within the roll and send the data to score_dice()
     hash = Hash.new(0)
     returnData = Array.new  
@@ -115,7 +113,7 @@ def combo_check(array) #check for any combos within the roll and send the data t
     end  
     return returnData 
 end 
-###########################################################################################################################################
+
 def scoreDice(data, bank, dice_set, farkle_flag) #determine the user's score from the roll and give them options based on that roll
     bank_start = bank
     if data[0] == 0 and data[1] == 0 #no combos but maybe some 1's or 5's
@@ -382,11 +380,11 @@ def scoreDice(data, bank, dice_set, farkle_flag) #determine the user's score fro
     player_data = [dice_set, bank, farkle_flag]
     return player_data
 end 
-###################################################################################################################################################
+
 def create_set(num)
     return Array.new(num) {rand(1..6)}
 end 
-###################################################################################################################################################
+
 def create_players(num)
     player_array = Array.new
     count = 1
@@ -399,7 +397,7 @@ def create_players(num)
     end 
     return player_array
 end    
-###################################################################################################################################################
+
 def show_scores(array, current_player)
     array.each do |player|
         print "#{player.name}'s score: #{player.score} | "
