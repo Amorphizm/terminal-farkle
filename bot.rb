@@ -38,8 +38,13 @@ class Bot
                 self.update_farkles()
                 pass_turn = true
             else 
+                if @farkles == 0 
+                    pass_num = 3
+                else
+                    pass_num = 4 
+                end 
                 print "Do you wish to (r)roll again or (p)pass the turn to add to your score?: "
-                if dice_set.size == 0 or dice_set.size >= 3 
+                if dice_set.size == 0 or dice_set.size >= pass_num
                     answer = 'r'
                     puts "#{@name} is rolling again."
                 else 
