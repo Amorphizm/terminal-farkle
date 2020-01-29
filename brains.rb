@@ -114,19 +114,29 @@ def combo_check(array) #check for any combos within the roll and send the data t
     return returnData 
 end 
 
-def scoreDice(data, bank, dice_set, farkle_flag) #determine the user's score from the roll and give them options based on that roll
+def count_ones_fives(dice_set)
+    ones_fives = Hash.new(0)
+    dice_set.each do |die|
+        if die == 1 or die == 5
+            ones_fives[die] += 1 
+        end
+    end
+    return ones_fives
+end 
+
+def get_remainder(ones_fives)
+    sum = 0
+    ones_fives.each do |key, value|
+        sum += value
+    end
+    return sum
+end 
+
+def scoreDice(data, bank, dice_set, farkle_flag, is_bot) #determine the user's score from the roll and give them options based on that roll
     bank_start = bank
     if data[0] == 0 and data[1] == 0 #no combos but maybe some 1's or 5's
-        sum = 0
-        ones_fives = Hash.new(0)
-        dice_set.each do |die|
-            if die == 1 or die == 5
-                ones_fives[die] += 1 
-            end
-        end
-        ones_fives.each do |key, value|
-            sum += value
-        end
+        ones_fives = count_ones_fives(dice_set)
+        sum = get_remainder(ones_fives)
         if ones_fives.empty? 
             puts "Sorry - you farkled! Adding 1 to your farkle count and clearing the bank."
             farkle_flag = true
@@ -143,13 +153,18 @@ def scoreDice(data, bank, dice_set, farkle_flag) #determine the user's score fro
         else #there are at least 2 bankable die within the roll, user has to bank at least one of them to continue
             valid = false 
             while valid == false 
-                puts "Remaining die - #{dice_set}"
-                print "You have #{sum} die you can bank, would you like to bank (a)all or (o)one/some of them?: " 
-                answer = gets.chomp.to_s
-                if answer.downcase.eql?('a') or answer.downcase.eql?('o')
-                    valid = true 
+                if is_bot == false
+                    puts "Remaining die - #{dice_set}"
+                    print "You have #{sum} die you can bank, would you like to bank (a)all or (o)one/some of them?: " 
+                    answer = gets.chomp.to_s
+                    if answer.downcase.eql?('a') or answer.downcase.eql?('o')
+                        valid = true 
+                    else 
+                        puts 'Invalid input - try again.' 
+                    end 
                 else 
-                    puts 'Invalid input - try again.' 
+                    answer = 'a'
+                    valid = true 
                 end 
             end 
             if answer.eql?('a')
@@ -160,7 +175,7 @@ def scoreDice(data, bank, dice_set, farkle_flag) #determine the user's score fro
                         bank += 50 * value 
                     end 
                     dice_set.delete(key)
-                end
+                end 
             else 
                 puts "Which of the available dice would you like to bank?"
                 valid = false 
@@ -212,26 +227,23 @@ def scoreDice(data, bank, dice_set, farkle_flag) #determine the user's score fro
             dice_set.delete(data[0].key(5))
             bank += data[1]
         end
-        sum = 0
-        ones_fives = Hash.new(0)
-        dice_set.each do |die|
-            if die == 1 or die == 5
-                ones_fives[die] += 1 
-            end
-        end
-        ones_fives.each do |key, value|
-            sum += value
-        end
+        ones_fives = count_ones_fives(dice_set)
+        sum = get_remainder(ones_fives)
         if !ones_fives.empty? 
             valid = false 
             while valid == false 
-                puts "Remaining die - #{dice_set}"
-                print "You have #{sum} remainig die you can bank, would you like to bank (a)all, (s)some or (n)none of them?: " 
-                answer = gets.chomp.to_s
-                if answer.downcase.eql?('a') or answer.downcase.eql?('s') or answer.downcase.eql?('n')
-                    valid = true 
+                if is_bot == false 
+                    puts "Remaining die - #{dice_set}"
+                    print "You have #{sum} remainig die you can bank, would you like to bank (a)all, (s)some or (n)none of them?: " 
+                    answer = gets.chomp.to_s
+                    if answer.downcase.eql?('a') or answer.downcase.eql?('s') or answer.downcase.eql?('n')
+                        valid = true 
+                    else 
+                        puts 'Invalid input - try again.' 
+                    end 
                 else 
-                    puts 'Invalid input - try again.' 
+                    answer = 'a'
+                    valid = true
                 end 
             end 
             if answer.eql?('a')
@@ -296,26 +308,23 @@ def scoreDice(data, bank, dice_set, farkle_flag) #determine the user's score fro
         delete_list.each do |del|
             dice_set.delete_at(dice_set.index(del))
         end
-        sum = 0
-        ones_fives = Hash.new(0)
-        dice_set.each do |die|
-            if die == 1 or die == 5
-                ones_fives[die] += 1 
-            end
-        end
-        ones_fives.each do |key, value|
-            sum += value
-        end
+        ones_fives = count_ones_fives(dice_set)
+        sum = get_remainder(ones_fives)
         if !ones_fives.empty? 
             valid = false 
             while valid == false 
-                puts "Remaining die - #{dice_set}"
-                print "You have #{sum} remainig die you can bank, would you like to bank (a)all, (s)some or (n)none of them?: " 
-                answer = gets.chomp.to_s
-                if answer.downcase.eql?('a') or answer.downcase.eql?('s') or answer.downcase.eql?('n')
-                    valid = true 
+                if is_bot == false 
+                    puts "Remaining die - #{dice_set}"
+                    print "You have #{sum} remainig die you can bank, would you like to bank (a)all, (s)some or (n)none of them?: " 
+                    answer = gets.chomp.to_s
+                    if answer.downcase.eql?('a') or answer.downcase.eql?('s') or answer.downcase.eql?('n')
+                        valid = true 
+                    else 
+                        puts 'Invalid input - try again.' 
+                    end 
                 else 
-                    puts 'Invalid input - try again.' 
+                    answer = 'a'
+                    valid = true 
                 end 
             end 
             if answer.eql?('a')
@@ -385,20 +394,36 @@ def create_set(num)
     return Array.new(num) {rand(1..6)}
 end 
 
+#add functionality for checking for ".bot" within the player name as a flag to make a bot to play against
 def create_players(num)
+    name_array = Array.new
     player_array = Array.new
     count = 1
     while count <= num
-        print "What is player number #{count}'s name?: "
-        name = gets.chomp
-        player = Player.new(name, 0)
+        valid_name = false 
+        while valid_name == false
+            print "What is player number #{count}'s name?: "
+            name = gets.chomp
+            if name_array.include?(name)
+                puts "Sorry, the name #{name} is already taken. Please choose a different name." 
+            else 
+                if name.include?('.bot')
+                    puts 'you added a bot'
+                    player = Bot.new(name, 0)
+                else 
+                    player = Player.new(name, 0)
+                end
+                name_array << name
+                valid_name = true 
+            end 
+        end
         player_array << player
         count += 1 
     end 
     return player_array
 end    
 
-def show_scores(array, current_player)
+def show_scores(array)
     array.each do |player|
         print "#{player.name}'s score: #{player.score} | "
     end 

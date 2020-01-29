@@ -1,3 +1,5 @@
+require_relative 'brains.rb'
+
 class Player 
     attr_accessor :name, :score, :farkles
     def initialize(name, score)
@@ -5,6 +7,7 @@ class Player
         @score = score 
         @farkles = 0 
     end 
+
     def update_farkles()
         @farkles += 1 
         if @farkles == 3 
