@@ -21,58 +21,20 @@ puts "-----------------Welcome-to-Farkle!-----------------"
 winner = false 
 while winner == false 
     player_array.each do |player|
+        #is the player a bot or not
         if player.class == Player 
-            is_bot = false
-            puts "It is now #{player.name}'s turn!"
-            farkle_flag = false 
-            pass_turn = false 
-            dice_set = create_set(6)
-            bank_hold = 0
-            while pass_turn == false
-                bank_temp = 0
-                puts "Your bank total - #{bank_hold} |"
-                show_scores(player_array)
-                puts "\n#{player.name} press enter to roll #{dice_set.size} dice."
-                STDIN.getch
-                puts "You rolled - #{dice_set}"
-                combo_data = combo_check(dice_set)
-                player_data = scoreDice(combo_data, bank_temp, dice_set, farkle_flag, is_bot)
-                dice_set = player_data[0]
-                bank_temp = player_data[1]
-                farkle_flag = player_data[2]
-                bank_hold += bank_temp
-                if farkle_flag == true
-                    player.update_farkles()
-                    pass_turn = true
-                else 
-                    print "Do you wish to (r)roll again or (p)pass the turn to add to your score?: "
-                    answer = gets.chomp
-                    if answer.eql?('r')
-                        if dice_set.empty?
-                            puts "Creating a new dice set."
-                            dice_set = create_set(6)
-                        else 
-                            dice_set = create_set(dice_set.size)
-                        end 
-                    else
-                        puts "#{player.name} is passing the turn."
-                        player.score += bank_hold
-                        if player.score >= 10000
-                            puts "GAME OVER - #{player.name} won with #{player.score} points!"
-                            winner = true
-                        else 
-                            pass_turn = true
-                        end         
-                    end
-                end 
-            end 
+            player.take_turn(player_array) 
+            if player.score >= 10000
+                puts "GAME OVER - #{player.name} won with #{player.score} points!"
+                winner = true
+                break
+            end
         else 
             player.take_turn()
             if player.score >= 10000
                 puts "GAME OVER - #{player.name} won with #{player.score} points!"
                 winner = true
-            else 
-                pass_turn = true
+                break
             end
         end 
     end 
