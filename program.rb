@@ -21,21 +21,11 @@ puts "-----------------Welcome-to-Farkle!-----------------"
 winner = false 
 while winner == false 
     player_array.each do |player|
-        #is the player a bot or not
-        if player.class == Player 
-            player.take_turn(player_array) 
-            if player.score >= 10000
-                puts "GAME OVER - #{player.name} won with #{player.score} points!"
-                winner = true
-                break
-            end
-        else 
-            player.take_turn()
-            if player.score >= 10000
-                puts "GAME OVER - #{player.name} won with #{player.score} points!"
-                winner = true
-                break
-            end
+        player.take_turn(player_array)
+        if player.score >= 10000
+            puts "GAME OVER - #{player.name} won with #{player.score} points!"
+            winner = true
+            break
         end 
     end 
 end 

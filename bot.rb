@@ -17,10 +17,11 @@ class Bot
         end 
     end 
 
-    def take_turn()
+    def take_turn(player_array)
         is_bot = true 
         pass_turn = false 
         puts "It is now #{@name}'s turn!"
+        show_scores(player_array)
         bank_hold = 0
         dice_set = create_set(6)
         while pass_turn == false 
