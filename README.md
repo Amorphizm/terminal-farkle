@@ -3,6 +3,7 @@ A terminal version of the dice game farkle built with ruby 2.5
 -
 **Running the code** - 
 - within the code's directory, execute the command ruby program.rb
+<a/>
 **Scoring** - 
 - 5 = 50pts
 - 1 = 100pts
