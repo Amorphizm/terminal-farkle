@@ -1,7 +1,9 @@
 <?php
-    include('Classes/Farkle.php');
 
-    $farkle = new Farkle;
+include('Classes/Farkle.php');
 
-    $farkle->start();
+$farkle = new Farkle;
+
+$farkle->start();
+
 ?>
