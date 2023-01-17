@@ -2,18 +2,21 @@
 
 require('Player.php');
 require('Bot.php');
+require('Dice.php');
 
 class Farkle
 {
     protected bool $gameOver;
     protected array $players;
     protected int $numPlayers;
+    protected Dice $dice;
 
     public function __construct()
     {
         $this->players = [];
         $this->gameOver = false;
         $this->numPlayers = $this->getNumPlayers();
+        $this->dice = new Dice();
     }
 
     /**
@@ -46,12 +49,18 @@ class Farkle
 
         while (!$this->gameOver) {
             foreach ($this->players as $player) {
-                $class = get_class($player);
-                echo "{$player->name} - {$class}\n";
-            }
+                echo "{$player->name} turn\n";
+                $player->takeTurn($this->dice);
+                $player->score = 10000;
+                echo "Player {$player->name} - {$player->score}\n";
 
-            // remove this later, just here for now to prevent infinite loop
-            $this->gameOver = true;
+                // see if we have a winner
+                if ($player->score >= 10000) {
+                    echo "Player {$player->name} has a winning score of {$player->score}\n";
+                    $this->gameOver = true;
+                    break;
+                }                
+            }
         }
     }
 

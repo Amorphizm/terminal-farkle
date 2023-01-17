@@ -4,13 +4,17 @@ class Player
 {
     public int $score;
     public int $farkles;
+    protected int $bank;
     public string $name;
+    public int $rollNum;
 
     public function __construct(string $name) 
     {
         $this->score = 0;
         $this->farkles = 0;
+        $this->bank = 0;
         $this->name = $name;
+        $this->rollNum = 6;
     }
 
     /**
@@ -29,6 +33,12 @@ class Player
         } else {
             echo "{$this->name} - You have a total of {$this->farkles} farkles.\n";
         }
+    }
+
+    public function takeTurn(Dice $dice)
+    {
+        $roll = $dice->rollDice($this->rollNum);
+        var_dump($roll);
     }
 }
 
