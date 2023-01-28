@@ -37,8 +37,19 @@ class Player
 
     public function takeTurn(Dice $dice)
     {
-        $roll = $dice->rollDice($this->rollNum);
-        var_dump($roll);
+        $passTurn = false;
+
+        while ($passTurn == false) {
+            // $roll = $dice->rollDice($this->rollNum);
+            $roll = [1, 2, 4, 3, 5, 6];
+
+            $dice->scoreRoll($roll);
+
+            $passTurn = true;
+        }
+
+        // set the number of dice back to six for the next player
+        $this->rollNum = 6;
     }
 }
 
