@@ -1,8 +1,8 @@
 <?php
 
-require('Player.php');
-require('Bot.php');
-require('Dice.php');
+require 'Bot.php';
+require 'Dice.php';
+require 'Player.php';
 
 class Farkle
 {

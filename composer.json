@@ -1,0 +1,13 @@
+{
+  "name": "noahhaupt/terminal-farkle-2",
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
+  "description": "The farkle dice game",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Noah Haupt"
+    }
+  ]
+}

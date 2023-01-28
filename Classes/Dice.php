@@ -5,7 +5,7 @@ class Dice
     protected array $diceFace = [1, 2, 3, 4, 5, 6];
 
     // distinct score values
-    protected array $scoreValues = [
+    public array $scoreValues = [
         '5' => 50,
         '1' => 100,
         'pairs' => 1500,
@@ -27,7 +27,13 @@ class Dice
     public function scoreRoll(array $roll)
     {
         $amountCheck = [];
-        $returnData = [];
+
+        $rollData = [
+            'points' => 0,
+            'remainingDice' => 0,
+            'canRollAgain' => false,
+            'comboName' => null
+        ];
 
         foreach ($roll as $dice) {
             if (!isset($amountCheck[$dice])) {
@@ -39,20 +45,27 @@ class Dice
 
         // combos you can only get with all 6 dice
         if (count($roll) == 6) {
-            $points = $this->allDiceComboCheck($amountCheck);
-            var_dump($points);
+            $rollData = $this->allDiceComboCheck($amountCheck, $rollData);
+
+            // if we got an all dice combo, return the data needed for the next roll
+            if ($rollData['points']) {
+                return $rollData;
+            }
         }
     }
 
-    public function allDiceComboCheck(array $amountCheck)
+    public function allDiceComboCheck(array $amountCheck, array $rollData)
     {
+        $rolledPoints = 0;
+        $rolledComboName = null;
+
         // straignt check
         if (count($amountCheck) == 6) {
-            return $this->scoreValues['straight'];
-        }
+            $rolledPoints = $this->scoreValues['straight'];
+            $rolledComboName = 'straight';
 
-        // 4 of a kind + 2 or 3 of a kind + 3 of a kind check
-        if (count($amountCheck) == 2) {
+        // 4 of a kind + 2 or 3 of a kind + 3 of a kind check    
+        } else if (count($amountCheck) == 2) {
             $noPair = false;
 
             foreach ($amountCheck as $dieFaceCount) {
@@ -62,15 +75,24 @@ class Dice
             }
 
             if (!$noPair) {
-                return $this->scoreValues['pairs'];
+                $rolledPoints = $this->scoreValues['pairs'];
+                $rolledComboName = 'pairs';
             }
-        }
 
         // 6 of a kind check
-        if (count($amountCheck) == 1) {
-            return $this->scoreValues['six of a kind'];
+        } else if (count($amountCheck) == 1) {
+            $rolledPoints = $this->scoreValues['six of a kind'];
+            $rolledComboName = 'six of a kind';
         }
 
+        // apply the data
+        if ($rolledPoints) {
+            $rollData['canRollAgain'] = true;
+            $rollData['points'] += $rolledPoints;
+            $rollData['comboName'] = $rolledComboName;
+        }
+
+        return $rollData;
     }
 }
 
