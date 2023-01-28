@@ -40,8 +40,7 @@ class Player
         $passTurn = false;
 
         while ($passTurn == false) {
-            // $roll = $dice->rollDice($this->rollNum);
-            $roll = [1, 2, 4, 3, 5, 6];
+            $roll = $dice->rollDice($this->rollNum);
 
             $rollData = $dice->scoreRoll($roll);
 

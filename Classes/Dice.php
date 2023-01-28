@@ -8,9 +8,11 @@ class Dice
     public array $scoreValues = [
         '5' => 50,
         '1' => 100,
-        'pairs' => 1500,
-        'six of a kind' => 2500,
-        'straight' => 3000,
+        // all dice combos
+        'pairs' => 1500, // ie. [1, 1, 1, 1, 2, 2] or [1, 1, 1, 2, 2, 2]
+        'super twos' => 2000, // ie. [1, 1, 2, 2, 3, 3]
+        'six of a kind' => 2500, // ie. [1, 1, 1, 1, 1, 1]
+        'straight' => 3000, // ie. [1, 2, 3, 4, 5, 6]
     ];
 
     public function rollDice(int $numDice)
@@ -52,6 +54,9 @@ class Dice
                 return $rollData;
             }
         }
+
+        // minor combos, less than all 6 dice
+        
     }
 
     public function allDiceComboCheck(array $amountCheck, array $rollData)
@@ -71,12 +76,29 @@ class Dice
             foreach ($amountCheck as $dieFaceCount) {
                 if ($dieFaceCount == 5) {
                     $noPair = true;
+                    break;
                 }
             }
 
             if (!$noPair) {
                 $rolledPoints = $this->scoreValues['pairs'];
                 $rolledComboName = 'pairs';
+            }
+        
+        // three 2 of a kind check
+        } else if (count($amountCheck) == 3) {
+            $noPair = false;
+
+            foreach ($amountCheck as $dieFaceCount) {
+                if ($dieFaceCount > 2) {
+                    $noPair = true;
+                    break;
+                }
+            }
+
+            if (!$noPair) {
+                $rolledPoints = $this->scoreValues['super twos'];
+                $rolledComboName = 'super twos';
             }
 
         // 6 of a kind check

@@ -36,6 +36,13 @@ final class DiceTest extends TestCase
         $rollData = $dice->scoreRoll($roll);
         $this->assertNotSame($rollData['points'], $dice->scoreValues['pairs']);
 
+        // three 2 of a kind check
+        $roll = [1, 1, 2, 2, 3, 3];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['points'], $dice->scoreValues['super twos']);
+        $this->assertSame($rollData['remainingDice'], 0);
+        $this->assertSame($rollData['canRollAgain'], true);
+
         // 6 of a kind check
         $roll = [1, 1, 1, 1, 1, 1];
         $rollData = $dice->scoreRoll($roll);
