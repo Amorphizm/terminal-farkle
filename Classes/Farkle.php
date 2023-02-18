@@ -78,11 +78,9 @@ class Farkle
                 $name = (string) readLine("Please name for player $i: ");
                 if (strlen($name) > 25) { // limit character length for player names to 25 chars
                     echo "That player name is too long. Please try a different name.\n";
-                } else if (substr($name, -strlen('.bot')) === '.bot') {
-                    array_push($this->players, new Bot($name));
-                    $valid = true;
                 } else {
-                    array_push($this->players, new Player($name));
+                    $player = (substr($name, -strlen('.bot')) === '.bot') ? new Bot($name) : new Player($name);
+                    array_push($this->players, $player);
                     $valid = true;
                 }
             }
