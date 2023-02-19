@@ -37,6 +37,7 @@ class Dice
             'comboName' => null
         ];
 
+        // get the amount for each type of dice face that was rolled
         foreach ($roll as $dice) {
             if (!isset($amountCheck[$dice])) {
                 $amountCheck[$dice] = 1;
