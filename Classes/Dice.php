@@ -35,7 +35,8 @@ class Dice
             'pointsToBank' => 0,
             'remainingDice' => 0,
             'canRollAgain' => false,
-            'comboName' => null
+            'comboName' => null,
+            'removeThisFromRoll' => null,
         ];
 
         // get the amount for each type of dice face that was rolled
@@ -118,31 +119,36 @@ class Dice
 
     public function xOfAKindCheck(array $rollData, array $amountCheck): array
     {
-        if (in_array(5, $amountCheck)) {
-            $rollData = $this->updateRollData($rollData, $this->scoreValues['five of a kind'], 'five of a kind', true, 1);
+        foreach ($amountCheck as $dieFace => $amount) {
+            switch ($amount) {
+                case 5:
+                    $rollData = $this->updateRollData($rollData, $this->scoreValues['five of a kind'], 'five of a kind', true, 1, $dieFace);
 
-        } else if (in_array(4, $amountCheck)) {
-            $rollData = $this->updateRollData($rollData, $this->scoreValues['four of a kind'], 'four of a kind', true, 2);
+                    break;
+                case 4: 
+                    $rollData = $this->updateRollData($rollData, $this->scoreValues['four of a kind'], 'four of a kind', true, 2, $dieFace);
 
-        } else if (in_array(3, $amountCheck)) {
-            // find the die face that has a quantity of 3
-            foreach ($amountCheck as $dieFace => $amount) {
-                if ($amount == 3) $pointsToBank = $dieFace == 1 ? 1000 : $dieFace * 100;
-                break;
+                    break;
+                case 3:
+                    $pointsToBank = $dieFace == 1 ? 1000 : $dieFace * 100;
+                    $rollData = $this->updateRollData($rollData, $pointsToBank, 'three of a kind', true, 3, $dieFace);
+
+                    break;
             }
 
-            $rollData = $this->updateRollData($rollData, $pointsToBank, 'three of a kind', true, 3);
+            if ($rollData['pointsToBank']) break;
         }
 
         return $rollData;
     }
 
-    public function updateRollData(array $rollData, int $pointsToBank, string $comboName = null, bool $canRollAgain, int $remainingDice)
+    public function updateRollData(array $rollData, int $pointsToBank, string $comboName = null, bool $canRollAgain, int $remainingDice, int $dieFaceToRemoveFromRoll = null)
     {
         $rollData['pointsToBank'] = $pointsToBank;
         $rollData['comboName'] = $comboName;
         $rollData['canRollAgain'] = $canRollAgain;
         $rollData['remainingDice'] = $remainingDice;
+        $rollData['removeThisFromRoll'] = $dieFaceToRemoveFromRoll;
 
         return $rollData;
     }

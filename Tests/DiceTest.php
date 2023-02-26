@@ -82,6 +82,7 @@ final class DiceTest extends TestCase
         $this->assertSame($rollData['pointsToBank'], 1000);
         $this->assertSame($rollData['remainingDice'], 3);
         $this->assertSame($rollData['canRollAgain'], true);
+        $this->assertSame($rollData['removeThisFromRoll'], 1);
 
         $roll = [2, 2, 2, 4, 5, 6];
         $rollData = $dice->scoreRoll($roll);
