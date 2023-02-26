@@ -32,7 +32,7 @@ class Dice
     public function scoreRoll(array $roll): array
     {
         $rollData = [
-            'points' => 0,
+            'pointsToBank' => 0,
             'remainingDice' => 0,
             'canRollAgain' => false,
             'comboName' => null
@@ -46,13 +46,16 @@ class Dice
             $rollData = $this->allDiceComboCheck($amountCheck, $rollData);
 
             // if we have an all dice combo, return the data needed for the next roll
-            if ($rollData['points']) {
+            if ($rollData['pointsToBank']) {
                 return $rollData;
             }
         }
 
         // x-of-a-kind checks. six of a kind has already been checked for by this point
         $rollData = $this->xOfAKindCheck($rollData, $amountCheck);
+
+        // check the remaining dice to see if any of them are scorable and if so we need to see if the user wants to bank them or reroll with them
+
 
         return $rollData;
     }
@@ -107,9 +110,7 @@ class Dice
 
         // insert the data
         if ($rolledPoints) {
-            $rollData['canRollAgain'] = true;
-            $rollData['points'] += $rolledPoints;
-            $rollData['comboName'] = $rolledComboName;
+            $rollData = $this->updateRollData($rollData, $rolledPoints, $rolledComboName, true, 0);
         }
 
         return $rollData;
@@ -118,27 +119,34 @@ class Dice
     public function xOfAKindCheck(array $rollData, array $amountCheck): array
     {
         if (in_array(5, $amountCheck)) {
-            $rollData['points'] += $this->scoreValues['five of a kind'];
-            $rollData['comboName'] = 'five of a kind';
-            $rollData['canRollAgain'] = true;
-            $rollData['remainingDice'] = 1;
+            $rollData = $this->updateRollData($rollData, $this->scoreValues['five of a kind'], 'five of a kind', true, 1);
+
         } else if (in_array(4, $amountCheck)) {
-            $rollData['points'] += $this->scoreValues['four of a kind'];
-            $rollData['comboName'] = 'four of a kind';
-            $rollData['canRollAgain'] = true;
-            $rollData['remainingDice'] = 2;
+            $rollData = $this->updateRollData($rollData, $this->scoreValues['four of a kind'], 'four of a kind', true, 2);
+
         } else if (in_array(3, $amountCheck)) {
             // find the die face that has a quantity of 3
             foreach ($amountCheck as $dieFace => $amount) {
-                if ($amount == 3) $rollData['points'] = $dieFace == 1 ? 1000 : $dieFace * 100;
+                if ($amount == 3) $pointsToBank = $dieFace == 1 ? 1000 : $dieFace * 100;
+                break;
             }
-            $rollData['comboName'] = 'three of a kind';
-            $rollData['canRollAgain'] = true;
-            $rollData['remainingDice'] = 3;
+
+            $rollData = $this->updateRollData($rollData, $pointsToBank, 'three of a kind', true, 3);
         }
 
         return $rollData;
     }
+
+    public function updateRollData(array $rollData, int $pointsToBank, string $comboName = null, bool $canRollAgain, int $remainingDice)
+    {
+        $rollData['pointsToBank'] = $pointsToBank;
+        $rollData['comboName'] = $comboName;
+        $rollData['canRollAgain'] = $canRollAgain;
+        $rollData['remainingDice'] = $remainingDice;
+
+        return $rollData;
+    }
+
 }
 
 ?>
