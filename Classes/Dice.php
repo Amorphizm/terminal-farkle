@@ -13,6 +13,9 @@ class Dice
         'super twos' => 2000, // ie. [1, 1, 2, 2, 3, 3]
         'six of a kind' => 2500, // ie. [1, 1, 1, 1, 1, 1]
         'straight' => 3000, // ie. [1, 2, 3, 4, 5, 6]
+        // other combos
+        'five of a kind' => 2000,
+        'four of a kind' => 1000
     ];
 
     public function rollDice(int $numDice)
@@ -26,10 +29,8 @@ class Dice
         return $roll;
     }
 
-    public function scoreRoll(array $roll)
+    public function scoreRoll(array $roll): array
     {
-        $amountCheck = [];
-
         $rollData = [
             'points' => 0,
             'remainingDice' => 0,
@@ -38,26 +39,40 @@ class Dice
         ];
 
         // get the amount for each type of dice face that was rolled
-        foreach ($roll as $dice) {
-            if (!isset($amountCheck[$dice])) {
-                $amountCheck[$dice] = 1;
-            } else {
-                $amountCheck[$dice] += 1;
-            }
-        }
+        $amountCheck = array_count_values($roll);
 
         // combos you can only get with all 6 dice
         if (count($roll) == 6) {
             $rollData = $this->allDiceComboCheck($amountCheck, $rollData);
 
-            // if we got an all dice combo, return the data needed for the next roll
+            // if we have an all dice combo, return the data needed for the next roll
             if ($rollData['points']) {
                 return $rollData;
             }
         }
 
-        // minor combos, less than all 6 dice
-        
+        // x-of-a-kind checks. six of a kind has already been checked for by this point
+        if (in_array(5, $amountCheck)) {
+            $rollData['points'] += $this->scoreValues['five of a kind'];
+            $rollData['comboName'] = 'five of a kind';
+            $rollData['canRollAgain'] = true;
+            $rollData['remainingDice'] = 1;
+        } else if (in_array(4, $amountCheck)) {
+            $rollData['points'] += $this->scoreValues['four of a kind'];
+            $rollData['comboName'] = 'four of a kind';
+            $rollData['canRollAgain'] = true;
+            $rollData['remainingDice'] = 2;
+        } else if (in_array(3, $amountCheck)) {
+            // find the die face that has a quantity of 3
+            foreach ($amountCheck as $dieFace => $amount) {
+                if ($amount == 3) $rollData['points'] = $dieFace == 1 ? 1000 : $dieFace * 100;
+            }
+            $rollData['comboName'] = 'three of a kind';
+            $rollData['canRollAgain'] = true;
+            $rollData['remainingDice'] = 3;
+        }
+
+        return $rollData;
     }
 
     public function allDiceComboCheck(array $amountCheck, array $rollData)
@@ -108,7 +123,7 @@ class Dice
             $rolledComboName = 'six of a kind';
         }
 
-        // apply the data
+        // insert the data
         if ($rolledPoints) {
             $rollData['canRollAgain'] = true;
             $rollData['points'] += $rolledPoints;

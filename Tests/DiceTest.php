@@ -58,6 +58,51 @@ final class DiceTest extends TestCase
         $rollData = $dice->scoreRoll($roll);
         $this->assertNotSame($rollData['points'], $dice->scoreValues['six of a kind']);
     }
+
+    public function testOtherCombos() {
+        $dice = new Dice();
+
+        // five of a kind check
+        $roll = [1, 1, 1, 1, 1, 6];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['points'], $dice->scoreValues['five of a kind']);
+        $this->assertSame($rollData['remainingDice'], 1);
+        $this->assertSame($rollData['canRollAgain'], true);
+
+        // four of a kind check
+        $roll = [1, 1, 1, 1, 2, 6];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['points'], $dice->scoreValues['four of a kind']);
+        $this->assertSame($rollData['remainingDice'], 2);
+        $this->assertSame($rollData['canRollAgain'], true);
+
+        // three of a kind checks
+        $roll = [1, 1, 1, 4, 2, 6];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['points'], 1000);
+        $this->assertSame($rollData['remainingDice'], 3);
+        $this->assertSame($rollData['canRollAgain'], true);
+
+        $roll = [2, 2, 2, 4, 5, 6];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['points'], 200);
+
+        $roll = [3, 3, 3, 4, 5, 6];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['points'], 300);
+
+        $roll = [4, 4, 4, 5, 5, 6];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['points'], 400);
+
+        $roll = [5, 5, 5, 4, 4, 6];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['points'], 500);
+
+        $roll = [6, 6, 6, 4, 5, 2];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['points'], 600);
+    }
 }
 
 ?>
