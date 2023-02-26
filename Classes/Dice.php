@@ -52,25 +52,7 @@ class Dice
         }
 
         // x-of-a-kind checks. six of a kind has already been checked for by this point
-        if (in_array(5, $amountCheck)) {
-            $rollData['points'] += $this->scoreValues['five of a kind'];
-            $rollData['comboName'] = 'five of a kind';
-            $rollData['canRollAgain'] = true;
-            $rollData['remainingDice'] = 1;
-        } else if (in_array(4, $amountCheck)) {
-            $rollData['points'] += $this->scoreValues['four of a kind'];
-            $rollData['comboName'] = 'four of a kind';
-            $rollData['canRollAgain'] = true;
-            $rollData['remainingDice'] = 2;
-        } else if (in_array(3, $amountCheck)) {
-            // find the die face that has a quantity of 3
-            foreach ($amountCheck as $dieFace => $amount) {
-                if ($amount == 3) $rollData['points'] = $dieFace == 1 ? 1000 : $dieFace * 100;
-            }
-            $rollData['comboName'] = 'three of a kind';
-            $rollData['canRollAgain'] = true;
-            $rollData['remainingDice'] = 3;
-        }
+        $rollData = $this->xOfAKindCheck($rollData, $amountCheck);
 
         return $rollData;
     }
@@ -128,6 +110,31 @@ class Dice
             $rollData['canRollAgain'] = true;
             $rollData['points'] += $rolledPoints;
             $rollData['comboName'] = $rolledComboName;
+        }
+
+        return $rollData;
+    }
+
+    public function xOfAKindCheck(array $rollData, array $amountCheck): array
+    {
+        if (in_array(5, $amountCheck)) {
+            $rollData['points'] += $this->scoreValues['five of a kind'];
+            $rollData['comboName'] = 'five of a kind';
+            $rollData['canRollAgain'] = true;
+            $rollData['remainingDice'] = 1;
+        } else if (in_array(4, $amountCheck)) {
+            $rollData['points'] += $this->scoreValues['four of a kind'];
+            $rollData['comboName'] = 'four of a kind';
+            $rollData['canRollAgain'] = true;
+            $rollData['remainingDice'] = 2;
+        } else if (in_array(3, $amountCheck)) {
+            // find the die face that has a quantity of 3
+            foreach ($amountCheck as $dieFace => $amount) {
+                if ($amount == 3) $rollData['points'] = $dieFace == 1 ? 1000 : $dieFace * 100;
+            }
+            $rollData['comboName'] = 'three of a kind';
+            $rollData['canRollAgain'] = true;
+            $rollData['remainingDice'] = 3;
         }
 
         return $rollData;
