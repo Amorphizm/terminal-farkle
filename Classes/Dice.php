@@ -55,9 +55,6 @@ class Dice
         // x-of-a-kind checks. six of a kind has already been checked for by this point
         $rollData = $this->xOfAKindCheck($rollData, $amountCheck);
 
-        // check the remaining dice to see if any of them are scorable and if so we need to see if the user wants to bank them or reroll with them
-
-
         return $rollData;
     }
 
