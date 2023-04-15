@@ -57,26 +57,46 @@ class Player
     public function evaluateRoll(array $roll, Dice $dice)
     {
         $rollData = $dice->scoreRoll($roll);
+        echo "Roll - ".json_encode($roll)."\n";
+        echo "Roll Data - ".json_encode($rollData)."\n";
 
         // update the players bank, will be 0 if we did not score a combo of some sort
         $this->bank += $rollData['pointsToBank'];
 
-        // update the roll if we need to remove a specific die face
-        if ($rollData['removeThisFromRoll']) {
-            $roll = array_values(array_diff($roll, [ $rollData['removeThisFromRoll'] ]));
+        // check to see if the player farkled
+        if ($rollData['farkle']) $this->farkleUpdates();
+
+        // display the combo name if the player rolled a combo
+        if ($rollData['comboName']) {
+            echo "{$this->name} rolled a {$rollData['comboName']} and must roll again!\n";
+            return;
         }
 
-        /// check to see if the player farkled
-        if (!$this->bank && !in_array(1, $roll) && !in_array(5, $roll)) {
-            // TODO - output text to user to let them know they farkled
-            $this->farkles += 1;
+        // let the player know if we auto banked a single scoring die
+        if ($rollData['autoBanked']) {
+            echo "Auto banking single ". $rollData['scoreableDie'] ." die for {$this->name}.\n";
 
-            // TODO - check to see if the player has 3 farkles, if so reset to farkle count to 0 and subtract 1000 points from score
-
-            $this->passTurn = true;
+            $this->rollNum -= 1;
         }
 
-        // temporary to prevent infinite loop
+        // logic for player decisions
+        
+
+        // move points from bank to score
+        // $this->score += $this->bank;
+
+        // // temporary to prevent infinite loop
+        // $this->passTurn = true;
+    }
+
+    public function farkleUpdates()
+    {
+        // TODO - output text to user to let them know they farkled
+        $this->farkles += 1;
+
+        // TODO - check to see if the player has 3 farkles, if so reset to farkle count to 0 and subtract 1000 points from score
+
+
         $this->passTurn = true;
     }
 }

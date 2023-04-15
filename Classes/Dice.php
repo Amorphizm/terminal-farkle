@@ -6,8 +6,8 @@ class Dice
 
     // distinct score values
     public array $scoreValues = [
-        '5' => 50,
-        '1' => 100,
+        5 => 50,
+        1 => 100,
         // all dice combos
         'pairs' => 1500, // ie. [1, 1, 1, 1, 2, 2] or [1, 1, 1, 2, 2, 2]
         'super twos' => 2000, // ie. [1, 1, 2, 2, 3, 3]
@@ -35,8 +35,12 @@ class Dice
             'pointsToBank' => 0,
             'remainingDice' => 0,
             'canRollAgain' => false,
+            'farkle' => false,
             'comboName' => null,
             'removeThisFromRoll' => null,
+            'updatedRoll' => $roll,
+            'scoreableDice' => [],
+            'autoBanked' => false
         ];
 
         // get the amount for each type of dice face that was rolled
@@ -47,13 +51,32 @@ class Dice
             $rollData = $this->allDiceComboCheck($amountCheck, $rollData);
 
             // if we have an all dice combo, return the data needed for the next roll
-            if ($rollData['pointsToBank']) {
-                return $rollData;
-            }
+            if ($rollData['pointsToBank']) return $rollData;
         }
 
         // x-of-a-kind checks. six of a kind has already been checked for by this point
         $rollData = $this->xOfAKindCheck($rollData, $amountCheck);
+
+        // remove combo die face from roll
+        if ($rollData['removeThisFromRoll']) {
+            $rollData['updatedRoll'] = array_values(array_diff($roll, [ $rollData['removeThisFromRoll'] ]));
+            $rollData['removeThisFromRoll'] = null;
+        }
+        
+        // check the remaining die to see if there are any scoreable ones
+        foreach ($rollData['updatedRoll'] as $die) {
+            if ($die == 1 || $die == 5) array_push($rollData['scoreableDice'], $die);
+        }
+
+        // set farkle value
+        if (!$rollData['pointsToBank'] && !sizeof($rollData['scoreableDice'])) $rollData['farkle'] = true;
+
+        // lone die score auto bank
+        if (!$rollData['farkle'] && is_null($rollData['comboName']) && count($rollData['scoreableDice']) == 1) {
+            $rollData['pointsToBank'] = $this->scoreValues[$rollData['scoreableDice'][0]];
+            $rollData['autoBanked'] = true;
+            $rollData['updatedRoll'] = array_values(array_diff($roll, $rollData['scoreableDice']));
+        }
 
         return $rollData;
     }
