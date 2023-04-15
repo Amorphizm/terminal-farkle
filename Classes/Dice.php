@@ -75,6 +75,7 @@ class Dice
         if (!$rollData['farkle'] && is_null($rollData['comboName']) && count($rollData['scoreableDice']) == 1) {
             $rollData['pointsToBank'] = $this->scoreValues[$rollData['scoreableDice'][0]];
             $rollData['autoBanked'] = true;
+            $rollData['canRollAgain'] = true;
             $rollData['updatedRoll'] = array_values(array_diff($roll, $rollData['scoreableDice']));
         }
 
