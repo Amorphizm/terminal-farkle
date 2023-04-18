@@ -66,21 +66,28 @@ class Player
         // check to see if the player farkled
         if ($rollData['farkle']) $this->farkleUpdates();
 
-        // display the combo name if the player rolled a combo
+        // display the combo name if the player rolled an all dice combo and adjust roll num for next roll
         if ($rollData['comboName']) {
-            echo "{$this->name} rolled a {$rollData['comboName']} and must roll again!\n";
-            return;
+            echo "{$this->name} rolled a {$rollData['comboName']}!\n";
+            $this->rollNum = $rollData['remainingDice'];
         }
 
         // let the player know if we auto banked a single scoring die
         if ($rollData['autoBanked']) {
-            echo "Auto banking single ". $rollData['scoreableDie'] ." die for {$this->name}.\n";
-
+            echo "Auto banking single ". $rollData['scoreableDice'][0] ." die for {$this->name}.\n";
             $this->rollNum -= 1;
         }
 
-        // logic for player decisions
-        
+        // see if player can bank any remaining dice
+        if (!$rollData['autoBanked'] && $rollData['scoreableDice']) {
+            echo "You have the following dice you can bank - ".json_encode($rollData['scoreableDice'])."\n"; 
+            $this->selectDiceToBank($rollData['scoreableDice']);
+        }
+
+        // TODO - logic for player decisions
+        // see if player can bank any remaining dice
+            // if so let the player choose what to bank
+            // see if the player wants to roll again
 
         // move points from bank to score
         // $this->score += $this->bank;
@@ -98,6 +105,20 @@ class Player
 
 
         $this->passTurn = true;
+    }
+
+    public function selectDiceToBank(array $options)
+    {
+        $valid = false;
+        while ($valid == false) {
+            $input = (string) readLine('Enter the position(s) of the dice you would like to bank: ');
+            try {
+                $positions = explode('', $input);
+                echo json_encode($positions);
+            } catch (\Throwable $e) {
+                echo "Values entered are not valid. Message: {$e->getMessage()}.\n";
+            }
+        }
     }
 }
 

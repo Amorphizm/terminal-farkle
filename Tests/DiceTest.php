@@ -121,6 +121,19 @@ final class DiceTest extends TestCase
         $roll = [5, 2, 4, 3, 6, 6];
         $rollData = $dice->scoreRoll($roll);
         $this->assertSame($rollData['farkle'], false);
+
+        // other tests
+        $roll = [2, 4, 7, 7, 7];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['remainingDice'], 2);
+
+        $roll = [4, 7, 7, 7];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['remainingDice'], 1);
+
+        $roll = [7, 7, 7];
+        $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['remainingDice'], 0);
     }
 
     public function testFarkles() {
@@ -140,12 +153,15 @@ final class DiceTest extends TestCase
 
         $roll = [1, 2, 4, 3, 6, 6];
         $rollData = $dice->scoreRoll($roll);
+        $this->assertSame($rollData['canRollAgain'], true);
         $this->assertSame($rollData['pointsToBank'], 100);
         $this->assertSame(count($rollData['updatedRoll']), 5);
+
 
         $roll = [5, 2, 4, 3, 6, 6];
         $rollData = $dice->scoreRoll($roll);
         $this->assertSame($rollData['pointsToBank'], 50);
+        $this->assertSame($rollData['canRollAgain'], true);
     }
 }
 

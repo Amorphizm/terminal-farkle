@@ -2,6 +2,7 @@
 
 class Dice
 {
+    protected $rollNum;
     protected array $diceFace = [1, 2, 3, 4, 5, 6];
 
     // distinct score values
@@ -42,6 +43,8 @@ class Dice
             'scoreableDice' => [],
             'autoBanked' => false
         ];
+
+        $this->rollNum = count($roll);
 
         // get the amount for each type of dice face that was rolled
         $amountCheck = array_count_values($roll);
@@ -143,16 +146,16 @@ class Dice
         foreach ($amountCheck as $dieFace => $amount) {
             switch ($amount) {
                 case 5:
-                    $rollData = $this->updateRollData($rollData, $this->scoreValues['five of a kind'], 'five of a kind', true, 1, $dieFace);
+                    $rollData = $this->updateRollData($rollData, $this->scoreValues['five of a kind'], 'five of a kind', true, $this->rollNum - 5, $dieFace);
 
                     break;
                 case 4: 
-                    $rollData = $this->updateRollData($rollData, $this->scoreValues['four of a kind'], 'four of a kind', true, 2, $dieFace);
+                    $rollData = $this->updateRollData($rollData, $this->scoreValues['four of a kind'], 'four of a kind', true, $this->rollNum - 4, $dieFace);
 
                     break;
                 case 3:
                     $pointsToBank = $dieFace == 1 ? 1000 : $dieFace * 100;
-                    $rollData = $this->updateRollData($rollData, $pointsToBank, 'three of a kind', true, 3, $dieFace);
+                    $rollData = $this->updateRollData($rollData, $pointsToBank, 'three of a kind', true, $this->rollNum - 3, $dieFace);
 
                     break;
             }
@@ -173,7 +176,6 @@ class Dice
 
         return $rollData;
     }
-
 }
 
 ?>
