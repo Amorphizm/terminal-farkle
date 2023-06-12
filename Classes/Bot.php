@@ -1,6 +1,6 @@
 <?php
 
-// include('Player.php');
+require 'Player.php';
 
 class Bot extends Player {
     

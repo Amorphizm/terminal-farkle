@@ -2,7 +2,6 @@
 
 require 'Bot.php';
 require 'Dice.php';
-require 'Player.php';
 
 class Farkle
 {
