@@ -48,9 +48,6 @@ class Player
             $roll = $dice->rollDice($this->rollNum);
             $this->evaluateRoll($roll, $dice);
         }
-
-        // move points from bank to score
-        $this->score += $this->bank;
     }
 
     // abstracted this logic away from takeTurn to make it more unit testable, can feed in specific rolls and check player attributes after
@@ -64,7 +61,10 @@ class Player
         $this->bank += $rollData['pointsToBank'];
 
         // check to see if the player farkled
-        if ($rollData['farkle']) $this->farkleUpdates();
+        if ($rollData['farkle']) {
+            $this->farkleUpdates();
+            return;
+        }
 
         // display the combo name if the player rolled an all dice combo and adjust roll num for next roll
         if ($rollData['comboName']) {
@@ -80,52 +80,57 @@ class Player
 
         // see if player can bank any remaining dice
         if (!$rollData['autoBanked'] && $rollData['scoreableDice']) {
-            $valid = false;
-            while ($valid == false) {
-                $input = (string) readLine("You have the following dice you can bank - ".json_encode($rollData['scoreableDice'])." - would you like to bank any of these dice?: ");
-
-                $decision = strtolower($input);
-                if (in_array(strtolower($decision), ['yes', 'y', 'no', 'n'])) {
-                    $valid = true;
-                } else {
-                    echo "Please enter 'y' or 'n'.\n";
-                } 
-            }
+            $bankDiceDecision = $this->validateYesOrNoResponse("You have the following dice you can bank - ".json_encode($rollData['scoreableDice'])." - would you like to bank any of these dice?: ");
 
             // iterate over picked positions and add to bank
-            if (in_array($decision, ['yes', 'y'])) {
+            if (in_array($bankDiceDecision, ['yes', 'y'])) {
                 $total = 0;
                 $bankPositions = $this->selectDiceToBank($rollData['scoreableDice']);
 
                 foreach ($bankPositions as $pos) {
+                    $this->rollNum -= 1;
                     $pickedDice = intval($rollData['scoreableDice'][$pos]);
                     $total += $dice->scoreValues[$pickedDice];
                 }
 
                 $this->bank += $total;
                 echo "Added ". $total ." points to the bank!\n";
+                echo "Roll num " . strval($this->rollNum) . "\n";
             }
         }
 
-        // TODO - logic for player decisions
-        // see if player can bank any remaining dice
-            // if so let the player choose what to bank
-            // see if the player wants to roll again
+        // player scored all of the dice so we reset to 6 just in case they want to roll again
+        if ($this->rollNum == 0) $this->rollNum = 6;
 
-        // move points from bank to score
-        // $this->score += $this->bank;
+        // see if the player wants to roll again or pass the turn
+        $passTurnDecision = $this->validateYesOrNoResponse("You currently have " . $this->bank . " points banked and " . $this->rollNum . " rollable dice. Would you like to pass the turn?: ");
 
-        // // temporary to prevent infinite loop
-        // $this->passTurn = true;
+        if (in_array($passTurnDecision, ['yes', 'y'])) {
+            $this->score += $this->bank;
+            echo $this->name . " has added " . strval($this->bank) . " points to their score and now has a score of " . strval($this->score) .".\n";
+            $this->passTurn = true;
+        }
+
+        return;
     }
 
     public function farkleUpdates()
     {
-        // TODO - output text to user to let them know they farkled
         $this->farkles += 1;
 
-        // TODO - check to see if the player has 3 farkles, if so reset to farkle count to 0 and subtract 1000 points from score
+        if ($this->farkles == 3) {
+            // update the score
+            if ($this->score > 1000) {
+                $this->score -= 1000;
+            } else {
+                $this->score = 0;
+            }
 
+            $this->farkles = 0;
+            echo "Uh Oh! You just farkled for the third time :( Your farkle count has been reset.";
+        } else {
+            echo "You just farkled! Your current farkle count is now " . strval($this->farkles) . ".\n";
+        }
 
         $this->passTurn = true;
     }
@@ -155,6 +160,23 @@ class Player
                 echo "Values entered are not valid. Message: {$e->getMessage()}.\n";
             }
         }
+    }
+
+    public function validateYesOrNoResponse(string $question)
+    {
+        $valid = false;
+        while ($valid == false) {
+            $input = (string) readLine($question);
+
+            $decision = strtolower($input);
+            if (in_array(strtolower($decision), ['yes', 'y', 'no', 'n'])) {
+                $valid = true;
+            } else {
+                echo "Please enter 'y' or 'n'.\n";
+            }
+        }
+        
+        return $decision;
     }
 }
 
