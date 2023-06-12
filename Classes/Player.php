@@ -80,8 +80,31 @@ class Player
 
         // see if player can bank any remaining dice
         if (!$rollData['autoBanked'] && $rollData['scoreableDice']) {
-            echo "You have the following dice you can bank - ".json_encode($rollData['scoreableDice'])."\n"; 
-            $this->selectDiceToBank($rollData['scoreableDice']);
+            $valid = false;
+            while ($valid == false) {
+                $input = (string) readLine("You have the following dice you can bank - ".json_encode($rollData['scoreableDice'])." - would you like to bank any of these dice?: ");
+
+                $decision = strtolower($input);
+                if (in_array(strtolower($decision), ['yes', 'y', 'no', 'n'])) {
+                    $valid = true;
+                } else {
+                    echo "Please enter 'y' or 'n'.\n";
+                } 
+            }
+
+            // iterate over picked positions and add to bank
+            if (in_array($decision, ['yes', 'y'])) {
+                $total = 0;
+                $bankPositions = $this->selectDiceToBank($rollData['scoreableDice']);
+
+                foreach ($bankPositions as $pos) {
+                    $pickedDice = intval($rollData['scoreableDice'][$pos]);
+                    $total += $dice->scoreValues[$pickedDice];
+                }
+
+                $this->bank += $total;
+                echo "Added ". $total ." points to the bank!\n";
+            }
         }
 
         // TODO - logic for player decisions
@@ -111,10 +134,23 @@ class Player
     {
         $valid = false;
         while ($valid == false) {
-            $input = (string) readLine('Enter the position(s) of the dice you would like to bank: ');
             try {
-                $positions = explode('', $input);
-                echo json_encode($positions);
+                $bankPositions = [];
+                $input = (string) readLine("Enter the position(s) of the dice - ".json_encode($options)." - you would like to bank: ");
+                $positions = explode(' ', $input);
+
+                // validate input
+                foreach ($positions as $pos) {
+                    $pos = intval($pos);
+
+                    if ($pos > count($options) || $pos <  1) {
+                        throw new \Exception("Position number(s) ". $pos ." must be within dice amount bounds");
+                    } else {
+                        array_push($bankPositions, $pos - 1);
+                    }
+                }
+
+                return $bankPositions;
             } catch (\Throwable $e) {
                 echo "Values entered are not valid. Message: {$e->getMessage()}.\n";
             }
