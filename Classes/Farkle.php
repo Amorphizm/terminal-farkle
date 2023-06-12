@@ -6,17 +6,17 @@ require 'Player.php';
 
 class Farkle
 {
+    protected Dice $dice;
     protected bool $gameOver;
     protected array $players;
     protected int $numPlayers;
-    protected Dice $dice;
 
     public function __construct()
     {
         $this->players = [];
         $this->gameOver = false;
-        $this->numPlayers = $this->getNumPlayers();
         $this->dice = new Dice();
+        $this->numPlayers = $this->getNumPlayers();
     }
 
     /**
@@ -49,10 +49,8 @@ class Farkle
 
         while (!$this->gameOver) {
             foreach ($this->players as $player) {
-                echo "{$player->name} turn\n";
+                echo "{$player->name}'s turn - \n";
                 $player->takeTurn($this->dice);
-                $player->score = 10000;
-                echo "Player {$player->name} - {$player->score}\n";
 
                 // see if we have a winner
                 if ($player->score >= 10000) {
