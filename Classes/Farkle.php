@@ -48,6 +48,9 @@ class Farkle
 
         while (!$this->gameOver) {
             foreach ($this->players as $player) {
+                // clear the screen and print scoreboard
+                $this->printScoreBoard();
+
                 echo "{$player->name}'s turn - \n";
                 $player->takeTurn($this->dice);
 
@@ -82,6 +85,32 @@ class Farkle
                 }
             }
         }
+    }
+
+
+    public function printScoreBoard()
+    {
+        // clear out the screen
+        echo chr(27).chr(91).'H'.chr(27).chr(91).'J'; //^[H^[J
+
+        $scoreBoard = "
+        ******************************************************************
+        **------------------------ SCORE BOARD -------------------------**
+        ";
+
+        foreach ($this->players as $player) {
+            $playerRow = "
+            Name: $player->name    -    Score: $player->score    -    Farkles: $player->farkles
+            ";
+
+            $scoreBoard = $scoreBoard . $playerRow;
+        }
+
+        echo $scoreBoard . "
+        **--------------------------------------------------------------** 
+        ******************************************************************
+        \n
+        ";
     }
 }
 

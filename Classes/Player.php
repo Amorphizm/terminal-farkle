@@ -55,7 +55,7 @@ class Player
     {
         $rollData = $dice->scoreRoll($roll);
         echo "Roll - ".json_encode($roll)."\n";
-        echo "Roll Data - ".json_encode($rollData)."\n";
+        // echo "Roll Data - ".json_encode($rollData)."\n";
 
         // update the players bank, will be 0 if we did not score a combo of some sort
         $this->bank += $rollData['pointsToBank'];
