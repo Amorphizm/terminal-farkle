@@ -19,24 +19,6 @@ class Player
         $this->passTurn = false;
     }
 
-    /**
-     * adds 1 to a this player's farkle count and if 3 then reset's score and farkle count.
-     * Otherwise let the players know what farkle count this player is at. 
-     * 
-     * @return void
-     */ 
-    public function addFarkle()
-    {
-        $this->farkles += 1;
-        if ($this->farkles === 3) {
-            echo "OOPS! - you just farkled for the third time. {$this->name}'s score and farkle count have been reset to 0.\n";
-            $this->score = 0;
-            $this->farkles = 0;
-        } else {
-            echo "{$this->name} - You have a total of {$this->farkles} farkles.\n";
-        }
-    }
-
     public function takeTurn(Dice $dice)
     {
         // reset values since this is a new turn
@@ -95,7 +77,6 @@ class Player
 
                 $this->bank += $total;
                 echo "Added ". $total ." points to the bank!\n";
-                echo "Roll num " . strval($this->rollNum) . "\n";
             }
         }
 
@@ -131,6 +112,9 @@ class Player
         } else {
             echo "You just farkled! Your current farkle count is now " . strval($this->farkles) . ".\n";
         }
+
+        // Make sure the player sees the farkle message
+        sleep(3);
 
         $this->passTurn = true;
     }
