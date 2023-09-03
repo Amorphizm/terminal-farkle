@@ -67,12 +67,19 @@ class Player
             // iterate over picked positions and add to bank
             if (in_array($bankDiceDecision, ['yes', 'y'])) {
                 $total = 0;
-                $bankPositions = $this->selectDiceToBank($rollData['scoreableDice']);
 
-                foreach ($bankPositions as $pos) {
+                if (count($rollData['scoreableDice']) == 1) {
                     $this->rollNum -= 1;
-                    $pickedDice = intval($rollData['scoreableDice'][$pos]);
+                    $pickedDice = intval($rollData['scoreableDice'][0]);
                     $total += $dice->scoreValues[$pickedDice];
+                } else {
+                    $bankPositions = $this->selectDiceToBank($rollData['scoreableDice']);
+
+                    foreach ($bankPositions as $pos) {
+                        $this->rollNum -= 1;
+                        $pickedDice = intval($rollData['scoreableDice'][$pos]);
+                        $total += $dice->scoreValues[$pickedDice];
+                    }
                 }
 
                 $this->bank += $total;
