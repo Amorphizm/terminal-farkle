@@ -35,30 +35,8 @@ class Player
     // abstracted this logic away from takeTurn to make it more unit testable, can feed in specific rolls and check player attributes after
     public function evaluateRoll(array $roll, Dice $dice)
     {
-        $rollData = $dice->scoreRoll($roll);
-        echo "Roll - ".json_encode($roll)."\n";
-        // echo "Roll Data - ".json_encode($rollData)."\n";
-
-        // update the players bank, will be 0 if we did not score a combo of some sort
-        $this->bank += $rollData['pointsToBank'];
-
-        // check to see if the player farkled
-        if ($rollData['farkle']) {
-            $this->farkleUpdates();
-            return;
-        }
-
-        // display the combo name if the player rolled an all dice combo and adjust roll num for next roll
-        if ($rollData['comboName']) {
-            echo "{$this->name} rolled a {$rollData['comboName']}!\n";
-            $this->rollNum = $rollData['remainingDice'];
-        }
-
-        // let the player know if we auto banked a single scoring die
-        if ($rollData['autoBanked']) {
-            echo "Auto banking single ". $rollData['scoreableDice'][0] ." die for {$this->name}.\n";
-            $this->rollNum -= 1;
-        }
+        $rollData = $this->checkRoll($roll, $dice);
+        if ($rollData['farkle']) return;
 
         // see if player can bank any remaining dice
         if (!$rollData['autoBanked'] && $rollData['scoreableDice']) {
@@ -107,6 +85,35 @@ class Player
         }
 
         return;
+    }
+
+    public function checkRoll(array $roll, Dice $dice): array|bool
+    {
+        $rollData = $dice->scoreRoll($roll);
+        echo "Roll - ".json_encode($roll)."\n";
+
+        // update the players bank, will be 0 if we did not score a combo of some sort
+        $this->bank += $rollData['pointsToBank'];
+
+        // check to see if the player farkled
+        if ($rollData['farkle']) {
+            $this->farkleUpdates();
+            return false;
+        }
+
+        // display the combo name if the player rolled an all dice combo and adjust roll num for next roll
+        if ($rollData['comboName']) {
+            echo "{$this->name} rolled a {$rollData['comboName']}!\n";
+            $this->rollNum = $rollData['remainingDice'];
+        }
+
+        // let the player know if we auto banked a single scoring die
+        if ($rollData['autoBanked']) {
+            echo "Auto banking single ". $rollData['scoreableDice'][0] ." die for {$this->name}.\n";
+            $this->rollNum -= 1;
+        }
+
+        return $rollData;
     }
 
     public function farkleUpdates()
