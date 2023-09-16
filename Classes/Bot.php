@@ -32,7 +32,7 @@ class Bot extends Player
                 $total += $dice->scoreValues[$pickedDice];
                 $this->bank += $total;
                 echo "Added ". $total ." points to the bank!\n";
-                sleep(1);
+                sleep($this->sleepTime);
             }
         }
 
