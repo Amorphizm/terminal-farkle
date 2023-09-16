@@ -51,7 +51,7 @@ class Farkle
                 // clear the screen and print scoreboard
                 $this->printScoreBoard();
 
-                echo "{$player->name}'s turn - \n";
+                echo "\n{$player->name}'s turn - \n";
                 $player->takeTurn($this->dice);
 
                 // see if we have a winner
@@ -113,7 +113,6 @@ class Farkle
         echo $scoreBoard . "
         **--------------------------------------------------------------** 
         ******************************************************************
-        \n
         ";
     }
 }
