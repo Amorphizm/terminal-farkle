@@ -62,7 +62,14 @@ class Player
 
         // see if player can bank any remaining dice
         if (!$rollData['autoBanked'] && $rollData['scoreableDice']) {
-            $bankDiceDecision = $this->validateYesOrNoResponse("You have the following dice you can bank - ".json_encode($rollData['scoreableDice'])." - would you like to bank any of these dice?: ");
+            // user needs to pick at least one dice to bank before continuing
+            if (!$rollData['pointsToBank']) {
+                echo "You must choose at least one dice to bank before continuing.\n";
+                $bankDiceDecision = 'y';
+            } else {
+                $message = "You have the following dice you can bank - ".json_encode($rollData['scoreableDice'])." - would you like to bank any of these dice?: ";
+                $bankDiceDecision = $this->validateYesOrNoResponse($message);
+            }
 
             // iterate over picked positions and add to bank
             if (in_array($bankDiceDecision, ['yes', 'y'])) {
