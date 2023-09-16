@@ -87,7 +87,11 @@ class Farkle
         }
     }
 
-
+    /**
+     * creates the score board
+     * 
+     * @return string
+     */ 
     public function printScoreBoard()
     {
         // clear out the screen
