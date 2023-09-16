@@ -29,11 +29,11 @@ class Player
         while ($this->passTurn == false) {
             $roll = $dice->rollDice($this->rollNum);
             $rollData = $this->checkRoll($roll, $dice);
-            $this->evaluateRoll($rollData, $dice);
+            if (!$rollData['farkle']) $this->evaluateRoll($rollData, $dice);
         }
     }
 
-    public function checkRoll(array $roll, Dice $dice): array|bool
+    public function checkRoll(array $roll, Dice $dice): array
     {
         $rollData = $dice->scoreRoll($roll);
         echo "Roll - ".json_encode($roll)."\n";
@@ -44,7 +44,8 @@ class Player
         // check to see if the player farkled
         if ($rollData['farkle']) {
             $this->farkleUpdates();
-            return false;
+            $this->passTurn = true;
+            return $rollData;
         }
 
         // display the combo name if the player rolled an all dice combo and adjust roll num for next roll
@@ -134,8 +135,6 @@ class Player
 
         // Make sure the player sees the farkle message
         sleep(3);
-
-        $this->passTurn = true;
     }
 
     public function selectDiceToBank(array $options)
